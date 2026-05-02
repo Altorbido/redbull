@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Red Bull x Modern Academy Collab</title>
+<style>
+    /* --- PAGE STYLING & THE MAGICAL DIAGONAL CUT --- */
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        height: 100vh;
+        overflow: hidden; 
+        
+        background: linear-gradient(
+            75deg, 
+            #e8e8e8 calc(50% - 3px),   
+            #DA1A32 calc(50% - 3px),   
+            #DA1A32 calc(50% + 3px),   
+            #001D4B calc(50% + 3px)    
+        );
+    }
+
+    /* --- LAYOUT: LEFT AND RIGHT HALVES --- */
+    .page-wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    .half-screen {
+        flex: 1; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px; 
+        z-index: 10;
+    }
+
+    /* --- COLLAB LOGOS (RIGHT SIDE) --- */
+    .collab-container {
+        display: flex;
+        align-items: center;
+        gap: 45px; 
+    }
+
+    .collab-line {
+        width: 2px;
+        height: 190px; 
+        background-color: #ffffff; 
+        border-radius: 2px;
+        opacity: 0.9; 
+        margin-left: 35px;
+    }
+
+    .modern-logo {
+        width: 400px; 
+        object-fit: contain; 
+        filter: drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.3));
+        margin-left: 70px;
+    }
+
+    .redbull-logo {
+        width: 330px; 
+        object-fit: contain; 
+    }
+
+    /* --- INPUT BOX CSS (LEFT SIDE) --- */
+    .brutalist-container {
+      position: relative;
+      width: 360px; 
+      font-family: monospace;
+    }
+
+    .brutalist-input {
+      width: 100%;
+      padding: 20px; 
+      font-size: 22px; 
+      font-weight: bold;
+      color: #001D4B; 
+      background-color: #fff;
+      border: 4px solid #000; 
+      position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 
+        5px 5px 0 #001D4B,   
+        10px 10px 0 #DA1A32, 
+        15px 15px 0 #FFCB05; 
+      box-sizing: border-box;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    .brutalist-input:focus {
+      animation: rb-focus-pulse 4s cubic-bezier(0.25, 0.8, 0.25, 1) infinite,
+        glitch 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+    }
+
+    .brutalist-input:focus::after {
+      content: "";
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      background: white;
+      z-index: -1;
+    }
+
+    .brutalist-input:focus::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #001D4B;
+      z-index: -2;
+      clip-path: inset(0 100% 0 0);
+      animation: glitch-slice 4s steps(2, end) infinite;
+    }
+
+    @keyframes glitch-slice {
+      0% { clip-path: inset(0 100% 0 0); }
+      10% { clip-path: inset(0 5% 0 0); }
+      20% { clip-path: inset(0 80% 0 0); }
+      30% { clip-path: inset(0 10% 0 0); }
+      40% { clip-path: inset(0 50% 0 0); }
+      50% { clip-path: inset(0 30% 0 0); }
+      60% { clip-path: inset(0 70% 0 0); }
+      70% { clip-path: inset(0 15% 0 0); }
+      80% { clip-path: inset(0 90% 0 0); }
+      90% { clip-path: inset(0 5% 0 0); }
+      100% { clip-path: inset(0 100% 0 0); }
+    }
+
+    /* --- LABEL STYLING --- */
+    .brutalist-label {
+      position: absolute;
+      left: -3px;
+      top: -38px; 
+      font-size: 16px; 
+      font-weight: bold;
+      color: #fff;
+      background-color: #000;
+      padding: 5px 10px;
+      transform: rotate(-1deg);
+      z-index: 1;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: default; 
+    }
+
+    .brutalist-label:hover {
+      color: #FFCB05; 
+    }
+
+    .brutalist-input:focus + .brutalist-label {
+      transform: rotate(0deg) scale(1.05);
+      background-color: #DA1A32; 
+      color: #fff;
+    }
+
+    .smooth-type {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .smooth-type::before {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .smooth-type:focus::before {
+      opacity: 1;
+      animation: type-gradient 2s linear infinite;
+    }
+
+    @keyframes type-gradient {
+      0% { background-position: 300px 0; }
+      100% { background-position: 0 0; }
+    }
+
+    .brutalist-input::placeholder {
+      color: #888;
+      transition: color 0.3s ease;
+    }
+
+    .brutalist-input:focus::placeholder {
+      color: transparent;
+    }
+
+    @keyframes rb-focus-pulse {
+      0%, 100% { border-color: #000; }
+      50% { border-color: #001D4B; }
+    }
+
+    /* --- SIGN UP BUTTON --- */
+    .sign-up {
+      border: 4px solid #000; 
+      background: #001D4B;    
+      color: #ffffff;         
+      padding: 18px;          
+      font-size: 22px;        
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+      width: 100%;
+      margin-top: 35px;       
+      box-sizing: border-box;
+      font-family: monospace;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .sign-up:hover {
+      background: #001D4B;    
+      color: #ffffff;         
+      border-color: #000;     
+      transform: translateY(-5px); 
+      box-shadow: 0 5px 0 #000;    
+    }
+
+    .sign-up:active {
+      animation: shake 0.5s ease-in-out;
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+
+    /* --- STATUS MESSAGE --- */
+    .status-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 3px solid;
+    }
+    .status-msg.visible { display: block; animation: fadeSlideIn 0.25s ease forwards; }
+    .status-msg.invalid  { color: #555;    border-color: #555;    background: rgba(255,255,255,0.85); }
+    .status-msg.approved { color: #1a7a3a; border-color: #1a7a3a; background: rgba(220,255,230,0.92); }
+    .status-msg.denied   { color: #DA1A32; border-color: #DA1A32; background: rgba(255,220,220,0.92); }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* --- MOBILE --- */
+    @media (max-width: 768px) {
+        body {
+            height: 100dvh;
+            overflow: hidden;
+            background: #001D4B;
+        }
+
+        .page-wrapper {
+            flex-direction: column;
+            height: 100dvh;
+            position: relative;
+        }
+
+        .half-screen {
+            flex: none;
+            width: 100%;
+            padding: 0;
+        }
+
+        /*
+         * Layout: screen split into thirds.
+         * Top third  — logos, centered
+         * Bottom two thirds — input form, centered
+         */
+
+        .half-screen.right-side {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 22%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .half-screen.left-side {
+            position: absolute;
+            top: 22%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 32px;
+            /* Subtle divider between logo zone and form zone */
+            border-top: 2px solid #DA1A32;
+            background: rgba(255,255,255,0.04);
+        }
+
+        /* Logos */
+        .collab-container {
+            gap: 16px;
+        }
+
+        .collab-line {
+            height: 100px;
+            margin-left: 0;
+        }
+
+        .modern-logo {
+            width: 210px;
+            margin-left: 0;
+        }
+
+        .redbull-logo {
+            width: 170px;
+        }
+
+        /* Form — compact */
+        .brutalist-container {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .brutalist-input {
+            font-size: max(16px, 3.5vw);
+            padding: 11px 14px;
+            box-shadow:
+                3px 3px 0 rgba(0,29,75,0.7),
+                6px 6px 0 #DA1A32,
+                9px 9px 0 #FFCB05;
+        }
+
+        .brutalist-label {
+            font-size: 11px;
+            top: -30px;
+            color: #fff;
+            background-color: #000;
+        }
+
+        .sign-up {
+            font-size: max(16px, 3.5vw);
+            padding: 11px 14px;
+            margin-top: 18px;
+            min-height: 46px;
+        }
+
+        .status-msg {
+            font-size: 12px;
+            margin-top: 12px;
+            padding: 9px 12px;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+
+        <!-- LEFT SIDE / TOP ON MOBILE: The Input Box Area (On Grey) -->
+        <div class="half-screen left-side">
+            <div class="brutalist-container">
+              <input id="codeInput" placeholder="TYPE HERE" class="brutalist-input smooth-type" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
+              <label class="brutalist-label">ENTER YOUR STUDENT CODE</label>
+              <button class="sign-up" id="checkBtn" onclick="checkCode()">CHECK CODE</button>
+              <div class="status-msg" id="statusMsg"></div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE / BOTTOM ON MOBILE: The Collab Logos Area (On Blue) -->
+        <div class="half-screen right-side">
+            <div class="collab-container">
+                <img src="modern.png" alt="Modern Academy Logo" class="modern-logo">
+                <div class="collab-line"></div>
+                <img src="bull.png" alt="Red Bull Logo" class="redbull-logo">
+            </div>
+        </div>
+
+    </div>
+
+
+<script>
+  const VALID_CODES = new Set([
+    "22300175","22300237","22300345","22300388","22300422","22300641","22300644",
+    "22300859","22301035","22301161","22301380","22301396","22400001","22400002",
+    "22400004","22400006","22400011","22400013","22400031","22400038","22400039",
+    "22400046","22400047","22400050","22400059","22400066","22400067","22400077",
+    "22400095","22400099","22400115","22400124","22400135","22400137","22400144",
+    "22400146","22400151","22400157","22400160","22400168","22400175","22400180",
+    "22400182","22400183","22400187","22400188","22400190","22400194","22400196",
+    "22400197","22400236","22400272","22400284","22400285","22400288","22400295",
+    "22400302","22400317","22400363","22400389","22400405","22400415","22400421",
+    "22400422","22400431","22400435","22400436","22400443","22400447","22400450",
+    "22400469","22400473","22400495","22400498","22400499","22400502","22400510",
+    "22400521","22400531","22400538","22400551","22400573","22400578","22400579",
+    "22400610","22400617","22400621","22400637","22400640","22400651","22400678",
+    "22400696","22400705","22400709","22400712","22400723","22400730","22400735",
+    "22400737","22400745","22400754","22400758","22400767","22400774","22400789",
+    "22400792","22400810","22400846","22400875","22400893","22400921","22400935",
+    "22400951","22400968","22400991","22400994","22401006","22401030","22401047",
+    "22401055","22401060","22401079","22401083","22401097","22401107","22401109",
+    "22401113","22401164","22401174","22401203","22401206","22401224","22401230",
+    "22401244","22401263","22401265","22401321","22401361","22401400","22401407",
+    "22401408","22401422","22401472","22401549","22505137","22605074"
+  ]);
+
+  const STORAGE_KEY = "rb_used_codes";
+
+  function getUsedCodes() {
+    try {
+      return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+    } catch { return new Set(); }
+  }
+
+  function markCodeUsed(code) {
+    const used = getUsedCodes();
+    used.add(code);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...used]));
+  }
+
+  function showStatus(type, message) {
+    const el = document.getElementById("statusMsg");
+    el.className = "status-msg";          // reset classes
+    el.textContent = message;
+    void el.offsetWidth;                  // force reflow so animation re-triggers
+    el.classList.add("visible", type);
+  }
+
+  function checkCode() {
+    const input = document.getElementById("codeInput");
+    const code  = input.value.trim();
+
+    if (!VALID_CODES.has(code)) {
+      showStatus("invalid", "✕  Code does not exist");
+      return;
+    }
+
+    const used = getUsedCodes();
+    if (used.has(code)) {
+      showStatus("denied", "✕  Code already used — access denied");
+    } else {
+      markCodeUsed(code);
+      showStatus("approved", "✓  Code approved — welcome!");
+    }
+  }
+
+  // Also allow pressing Enter in the input field
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("codeInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") checkCode();
+    });
+  });
+</script>
+
+</body>
+</html>
